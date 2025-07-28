@@ -1,0 +1,42 @@
+# render.yaml
+# This file defines your Render Blueprint for deploying Flask app and MySQL.
+
+services:
+  - type: web
+    name: inventory-service
+    # Point to your Docker Hub image. IMPORTANT: Replace your_dockerhub_username
+    image: David-raymond154/inventory-service:latest
+    envVars:
+      - key: MYSQL_HOST
+        value: db  # 'db' is the internal service name within Render's Blueprint
+      - key: MYSQL_USER
+        value: flaskuser
+      - key: MYSQL_DATABASE
+        value: inventory
+      - key: MYSQL_PASSWORD
+        sync: false # IMPORTANT: You MUST set this securely in Render's UI after creating the Blueprint
+    startCommand: "gunicorn --workers 4 --bind 0.0.0.0:5000 --timeout 120 run:app"
+    healthCheckPath: "/" # Render will check this path to see if your service is healthy
+    port: 5000
+    # Optional: You can set a custom instance type or scaling here if not using default
+    # instanceType: free # or 'starter', 'standard', etc.
+    # numInstances: 1 # Start with 1 instance
+
+  - type: private # 'private' means it's only accessible by other services within your Blueprint
+    name: db
+    image: mysql:8.0 # Pulls the official MySQL 8.0 image from Docker Hub
+    envVars:
+      - key: MYSQL_ROOT_PASSWORD
+        sync: false # IMPORTANT: You MUST set this securely in Render's UI after creating the Blueprint
+      - key: MYSQL_DATABASE
+        value: inventory
+      - key: MYSQL_USER
+        value: flaskuser
+      - key: MYSQL_PASSWORD
+        sync: false # IMPORTANT: You MUST set this securely in Render's UI after creating the Blueprint
+    disk: # This defines a persistent disk for your MySQL data
+      name: mysql-data-volume # A unique name for this disk
+      mountPath: /var/lib/mysql # This is the standard path where MySQL stores its data
+      sizeGB: 1 # Smallest allowed size, adjust if needed (e.g., 5 for more robustness)
+    # Optional: Scaling for the database, usually a single instance
+    # numInstances: 1
