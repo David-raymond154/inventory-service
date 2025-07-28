@@ -5,7 +5,7 @@ services:
   - type: web
     name: inventory-service
     # Point to your Docker Hub image. IMPORTANT: Replace your_dockerhub_username
-    image: David-raymond154/inventory-service:latest
+    image: David-raymond154/inventory-service:latest # Make sure David-raymond154 is your Docker Hub username
     envVars:
       - key: MYSQL_HOST
         value: db  # 'db' is the internal service name within Render's Blueprint
