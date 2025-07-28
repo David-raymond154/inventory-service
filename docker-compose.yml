@@ -1,0 +1,31 @@
+# docker-compose.yml
+version: "3.8"
+services:
+  inventory-service:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=flaskuser
+      - MYSQL_PASSWORD=flaskpassword
+      - MYSQL_DATABASE=inventory
+    depends_on:
+      - db
+    command: gunicorn --workers 4 --bind 0.0.0.0:5000 --timeout 120 run:app
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: inventory
+      MYSQL_USER: flaskuser
+      MYSQL_PASSWORD: flaskpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db_init:/docker-entrypoint-initdb.d
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
