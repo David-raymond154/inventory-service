@@ -22,7 +22,7 @@ services:
     # instanceType: free # or 'starter', 'standard', etc.
     # numInstances: 1 # Start with 1 instance
 
-  - type: private # 'private' means it's only accessible by other services within your Blueprint
+  - type: private # This line is correct for a private Render service
     name: db
     image: mysql:8.0 # Pulls the official MySQL 8.0 image from Docker Hub
     envVars:
