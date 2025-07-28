@@ -1,8 +1,7 @@
-# render.yaml
 services:
   - type: web
     name: inventory-service
-    image: David-raymond154/inventory-service:latest # Make sure David-raymond154 is your Docker Hub username
+    image: David-raymond154/inventory-service:latest
     envVars:
       - key: MYSQL_HOST
         value: db
@@ -15,7 +14,6 @@ services:
     startCommand: "gunicorn --workers 4 --bind 0.0.0.0:5000 --timeout 120 run:app"
     healthCheckPath: "/"
     port: 5000
-
   - type: private
     name: db
     image: mysql:8.0
